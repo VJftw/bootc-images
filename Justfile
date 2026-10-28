@@ -128,6 +128,10 @@ build $target_image=image_name $tag=default_tag:
     LABELS+=("--label" "org.opencontainers.image.description={{ image_desc }}")
     LABELS+=("--label" "org.opencontainers.image.title={{ image_name }}")
     LABELS+=("--label" "org.opencontainers.image.vendor={{ repo_organization }}")
+    # Lets CI skip rebuilding when the base image and build inputs are unchanged
+    if [[ -n "${BUILD_FINGERPRINT:-}" ]]; then
+        LABELS+=("--label" "dev.vjftw.build-fingerprint=${BUILD_FINGERPRINT}")
+    fi
 
     # This actually builds the image!
     PODMAN_BUILD_ARGS=("${BUILD_ARGS[@]}" "${LABELS[@]}" --pull=newer --tag "${target_image}:${tag}" --file Containerfile)

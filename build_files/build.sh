@@ -28,6 +28,29 @@ dnf5 install -y tmux
 
 systemctl enable podman.socket
 
+### Default sched_ext scheduler
+
+# bazzite-deck already ships /etc/scx_loader/config.toml (scx_lavd); plain bazzite only has
+# commented defaults under /usr/share, so create one. Keep existing per-scheduler flags.
+mkdir -p /etc/scx_loader
+if [[ -f /etc/scx_loader/config.toml ]]; then
+  sed -i -E 's/^#?\s*default_sched\s*=.*/default_sched = "scx_lavd"/' /etc/scx_loader/config.toml
+else
+  printf 'default_sched = "scx_lavd"\ndefault_mode = "Auto"\n' > /etc/scx_loader/config.toml
+fi
+grep -q '^default_sched = "scx_lavd"' /etc/scx_loader/config.toml
+
+### Image signature verification
+
+# Trust this repo's cosign key for ghcr.io/vjftw so `ostree-image-signed:` rebases verify
+jq '.transports.docker["ghcr.io/vjftw"] = [{
+  "type": "sigstoreSigned",
+  "keyPath": "/etc/pki/containers/vjftw.pub",
+  "signedIdentity": {"type": "matchRepository"}
+}]' /etc/containers/policy.json > /tmp/policy.json
+install -m644 /tmp/policy.json /etc/containers/policy.json
+rm /tmp/policy.json
+
 ### Variant-specific customisations
 
 bash -ouex pipefail /ctx/variant/build.sh

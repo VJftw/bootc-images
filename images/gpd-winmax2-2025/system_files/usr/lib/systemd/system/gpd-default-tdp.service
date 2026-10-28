@@ -1,0 +1,11 @@
+[Unit]
+Description=Set default TDP via PowerStation
+After=powerstation.service
+Wants=powerstation.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/libexec/gpd-default-tdp 15
+
+[Install]
+WantedBy=multi-user.target

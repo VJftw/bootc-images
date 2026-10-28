@@ -31,7 +31,8 @@ GPD Win Max 2 (2025) handheld.
 - **Image:** `ghcr.io/vjftw/bootc/bazzite/gpd-winmax2-2025`
 - **Base:** `ghcr.io/ublue-os/bazzite-deck:stable`
 - **Customisations:**
-  - None yet
+  - Autologin into Steam Big Picture (Game Mode) disabled; boots to the SDDM login screen
+  - Default TDP of 15W applied at boot via PowerStation (`gpd-default-tdp.service`)
 
 ## Building and switching
 

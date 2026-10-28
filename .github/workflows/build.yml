@@ -30,18 +30,45 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
-      - name: List variants
+      # Skip variants whose base image and build inputs are unchanged since the
+      # published :latest image was built. The fingerprint is stored on the image
+      # as a label (see `just build`). PRs and manual runs always build.
+      - name: Plan builds
         id: list
+        env:
+          REGISTRY_CREDS: ${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "variants=$(ls -1 images | jq -R . | jq -sc .)" >> $GITHUB_OUTPUT
+          registry="${IMAGE_REGISTRY,,}"
+          plan='[]'
+          for variant in $(ls -1 images); do
+            source "images/${variant}/variant.env"
+            base_digest="$(skopeo inspect --format '{{.Digest}}' "docker://${BASE_IMAGE}" || true)"
+            inputs="$(git ls-files -s Containerfile Justfile image-template.env build_files system_files "images/${variant}" | sha256sum | cut -d' ' -f1)"
+            fingerprint="$(echo "${BASE_IMAGE}@${base_digest} ${inputs}" | sha256sum | cut -d' ' -f1)"
+
+            published=""
+            if [[ -n "${base_digest}" && "${{ github.event_name }}" != "pull_request" && "${{ github.event_name }}" != "workflow_dispatch" ]]; then
+              published="$(skopeo inspect --creds "${REGISTRY_CREDS}" \
+                --format '{{index .Labels "dev.vjftw.build-fingerprint"}}' \
+                "docker://${registry}/bootc/bazzite/${variant}:latest" 2>/dev/null || true)"
+            fi
+
+            if [[ "${published}" == "${fingerprint}" ]]; then
+              echo "::notice::Skipping ${variant}: base image and inputs unchanged"
+            else
+              plan="$(jq -c --arg v "${variant}" --arg f "${fingerprint}" '. + [{variant: $v, fingerprint: $f}]' <<< "${plan}")"
+            fi
+          done
+          echo "variants=${plan}" >> $GITHUB_OUTPUT
 
   build_push:
     name: Build and push ${{ matrix.variant }}
     needs: variants
+    if: needs.variants.outputs.variants != '[]'
     strategy:
       fail-fast: false
       matrix:
-        variant: ${{ fromJson(needs.variants.outputs.variants) }}
+        include: ${{ fromJson(needs.variants.outputs.variants) }}
     runs-on: ubuntu-26.04
 
     permissions:
@@ -88,6 +115,8 @@ jobs:
       # This actually builds the container image
       - name: Build Image
         id: build-image
+        env:
+          BUILD_FINGERPRINT: ${{ matrix.fingerprint }}
         run: |
           just build \
             ${IMAGE_NAME} \
