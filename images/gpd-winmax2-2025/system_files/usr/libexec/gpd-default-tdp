@@ -1,0 +1,22 @@
+#!/usr/bin/bash
+# Set the default TDP via PowerStation. PowerStation has no persisted config; TDP
+# is a runtime DBus property on the GPU card, so apply it once at boot.
+set -euo pipefail
+
+TDP_WATTS="${1:-15}"
+SERVICE=org.shadowblip.PowerStation
+
+# PowerStation may still be probing hardware right after it starts
+for _ in $(seq 1 30); do
+    cards="$(busctl --system tree --list "$SERVICE" 2>/dev/null | grep -E '^/org/shadowblip/Performance/GPU/Card[0-9]+$' || true)"
+    for card in $cards; do
+        if busctl --system set-property "$SERVICE" "$card" org.shadowblip.GPU.Card.TDP TDP d "$TDP_WATTS" 2>/dev/null; then
+            echo "Set TDP to ${TDP_WATTS}W on ${card}"
+            exit 0
+        fi
+    done
+    sleep 1
+done
+
+echo "Failed to set TDP via PowerStation" >&2
+exit 1
