@@ -1,7 +1,7 @@
 # Allow build scripts to be referenced without being copied into the final image
 # VARIANT selects which directory under images/ is applied on top of the shared files
 ARG VARIANT
-# Each variant picks its base image in images/<variant>/variant.env
+# Each variant picks its base image in images/<variant>/Dockerfile (a single pinned FROM line, bumped by Dependabot)
 ARG BASE_IMAGE=ghcr.io/ublue-os/bazzite:stable
 FROM scratch AS ctx
 ARG VARIANT

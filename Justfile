@@ -102,9 +102,8 @@ build $target_image=image_name $tag=default_tag:
     fi
 
     BUILD_ARGS=("--build-arg" "VARIANT=${VARIANT}")
-    if [[ -f "images/${VARIANT}/variant.env" ]]; then
-        # shellcheck disable=SC1090
-        source "images/${VARIANT}/variant.env"
+    if [[ -f "images/${VARIANT}/Dockerfile" ]]; then
+        BASE_IMAGE="$(awk '/^FROM /{print $2; exit}' "images/${VARIANT}/Dockerfile")"
         BUILD_ARGS+=("--build-arg" "BASE_IMAGE=${BASE_IMAGE}")
     fi
     LABELS=()

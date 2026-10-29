@@ -40,7 +40,7 @@ Build one locally with `just build bootc/bazzite/asus-x470-prime-pro` (the varia
 
 ## Adding a variant
 
-To add a variant, create `images/<name>/variant.env` (`BASE_IMAGE=...`), `images/<name>/build.sh` (and optionally `system_files/`). `build.yml` discovers variants automatically.
+To add a variant, create `images/<name>/Dockerfile` (a single `FROM <base>:<tag>@sha256:<digest>` line, kept up to date by Dependabot), `images/<name>/build.sh` (and optionally `system_files/`). `build.yml` discovers variants automatically.
 
 ---
 
