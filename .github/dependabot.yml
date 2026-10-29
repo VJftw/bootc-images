@@ -9,3 +9,10 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+
+  # Base images are pinned by digest in images/<variant>/Dockerfile
+  - package-ecosystem: "docker"
+    directories:
+      - "/images/*"
+    schedule:
+      interval: "daily"

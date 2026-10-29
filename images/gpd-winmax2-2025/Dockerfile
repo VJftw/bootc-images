@@ -1,0 +1,1 @@
+FROM ghcr.io/ublue-os/bazzite-deck:stable@sha256:278941ea67603e24e24ff18e8c418b91f2f326fffd3d24edcff9779f36fbdf4e

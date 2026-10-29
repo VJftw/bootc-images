@@ -30,7 +30,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
-      # Skip variants whose base image and build inputs are unchanged since the
+      # Skip variants whose pinned base image and build inputs are unchanged since the
       # published :latest image was built. The fingerprint is stored on the image
       # as a label (see `just build`). PRs and manual runs always build.
       - name: Plan builds
@@ -41,13 +41,13 @@ jobs:
           registry="${IMAGE_REGISTRY,,}"
           plan='[]'
           for variant in $(ls -1 images); do
-            source "images/${variant}/variant.env"
-            base_digest="$(skopeo inspect --format '{{.Digest}}' "docker://${BASE_IMAGE}" || true)"
+            # The base image is pinned by digest in images/<variant>/Dockerfile, so the
+            # inputs hash already covers it
             inputs="$(git ls-files -s Containerfile Justfile image-template.env build_files system_files "images/${variant}" | sha256sum | cut -d' ' -f1)"
-            fingerprint="$(echo "${BASE_IMAGE}@${base_digest} ${inputs}" | sha256sum | cut -d' ' -f1)"
+            fingerprint="${inputs}"
 
             published=""
-            if [[ -n "${base_digest}" && "${{ github.event_name }}" != "pull_request" && "${{ github.event_name }}" != "workflow_dispatch" ]]; then
+            if [[ "${{ github.event_name }}" != "pull_request" && "${{ github.event_name }}" != "workflow_dispatch" ]]; then
               published="$(skopeo inspect --creds "${REGISTRY_CREDS}" \
                 --format '{{index .Labels "dev.vjftw.build-fingerprint"}}' \
                 "docker://${registry}/bootc/bazzite/${variant}:latest" 2>/dev/null || true)"

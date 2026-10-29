@@ -1,0 +1,1 @@
+FROM ghcr.io/ublue-os/bazzite:stable@sha256:ee82a885dbb77cd4604a5ffa8278a0eef0bc84d16850045c7b9d847729da9949
