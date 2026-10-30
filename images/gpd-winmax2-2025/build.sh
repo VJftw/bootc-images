@@ -13,3 +13,8 @@ systemctl mask bazzite-autologin.service
 
 # Default to a 15W TDP at boot (PowerStation doesn't persist TDP itself)
 systemctl enable gpd-default-tdp.service
+
+# bazzite-deck ships SDDM with no theme installed (hence the bare default greeter) and no
+# "Login Screen" page in System Settings. Add the Breeze theme (kde_settings.conf selects
+# 01-breeze-fedora) and the SDDM KCM to configure it.
+dnf5 install -y sddm-breeze sddm-kcm
