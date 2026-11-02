@@ -32,7 +32,7 @@ GPD Win Max 2 (2025) handheld.
 - **Base:** `ghcr.io/ublue-os/bazzite-deck:stable`
 - **Customisations:**
   - Autologin into Steam Big Picture (Game Mode) disabled; boots to the SDDM login screen
-  - SDDM Breeze theme and the Login Screen settings page (`sddm-breeze`, `sddm-kcm`) installed
+  - SDDM Breeze theme and the Login Screen settings page (`sddm-breeze`, `sddm-kcm`) installed; screen lock (Meta+L) and the SDDM settings page unblocked
   - Default TDP of 15W applied at boot via PowerStation (`gpd-default-tdp.service`)
 
 ## Building and switching
