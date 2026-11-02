@@ -18,3 +18,7 @@ systemctl enable gpd-default-tdp.service
 # "Login Screen" page in System Settings. Add the Breeze theme (kde_settings.conf selects
 # 01-breeze-fedora) and the SDDM KCM to configure it.
 dnf5 install -y sddm-breeze sddm-kcm
+
+# Valve's desktop defaults (immutable [$i] entries in /etc/xdg/kdeglobals) disable screen
+# locking, so Meta+L does nothing, and hide the SDDM settings page installed above.
+sed -i -e '/^action\/lock_screen=false$/d' -e '/^kcm_sddm\.desktop=false$/d' /etc/xdg/kdeglobals
