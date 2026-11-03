@@ -34,6 +34,7 @@ GPD Win Max 2 (2025) handheld.
   - Autologin into Steam Big Picture (Game Mode) disabled; boots to the SDDM login screen
   - SDDM Breeze theme and the Login Screen settings page (`sddm-breeze`, `sddm-kcm`) installed; screen lock (Meta+L) and the SDDM settings page unblocked
   - Default TDP of 15W applied at boot via PowerStation (`gpd-default-tdp.service`)
+  - Laptop defaults: lock on resume, longer idle timers on battery, no Steam autostart, on-screen keyboard off, Breeze look and feel
 
 ## Building and switching
 
