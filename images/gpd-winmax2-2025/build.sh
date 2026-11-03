@@ -17,7 +17,10 @@ systemctl enable gpd-default-tdp.service
 # bazzite-deck ships SDDM with no theme installed (hence the bare default greeter) and no
 # "Login Screen" page in System Settings. Add the Breeze theme (kde_settings.conf selects
 # 01-breeze-fedora) and the SDDM KCM to configure it.
-dnf5 install -y sddm-breeze sddm-kcm
+# Match the installed Plasma version: plasma-workspace is excluded from updates, and newer
+# sddm-* releases require a newer plasma-workspace than the pinned base image has.
+PLASMA_VERSION="$(rpm -q --qf '%{VERSION}' plasma-workspace)"
+dnf5 install -y "sddm-breeze-${PLASMA_VERSION}" "sddm-kcm-${PLASMA_VERSION}"
 
 # Valve's desktop defaults (immutable [$i] entries in /etc/xdg/kdeglobals) disable screen
 # locking, so Meta+L does nothing, and hide the SDDM settings page installed above.
