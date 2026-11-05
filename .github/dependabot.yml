@@ -16,3 +16,7 @@ updates:
       - "/images/*"
     schedule:
       interval: "daily"
+    groups:
+      base-images:
+        patterns:
+          - "*"
