@@ -1,1 +1,1 @@
-FROM ghcr.io/ublue-os/bazzite:stable@sha256:9ef3035588c6760e96c5064a1920db35c012c6c8e7d20ac6c1c31a04ed682e0b
+FROM ghcr.io/ublue-os/bazzite:stable@sha256:3c67436e214fe34be11565cd3f0065789b1f107984ab247ca6cea4bcd2c94597
