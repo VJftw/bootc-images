@@ -1,1 +1,1 @@
-FROM ghcr.io/ublue-os/bazzite-deck:stable@sha256:7403b03b8a80ce425c69e23c8473984237fe7e86a6c10e1b889b789b3a107ca2
+FROM ghcr.io/ublue-os/bazzite-deck:stable@sha256:f7ed137cffbc0f7c1b19408f5baf589171462e24f18a236b1def1bf2abf021bf
